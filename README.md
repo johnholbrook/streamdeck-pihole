@@ -1,2 +1,2 @@
 # streamdeck-pihole
- Streamdeck plugin for monitoring & controlling Pi-hole
+[Stream Deck](https://www.elgato.com/en/stream-deck) plugin for monitoring & controlling [Pi-hole](https://pi-hole.net).
