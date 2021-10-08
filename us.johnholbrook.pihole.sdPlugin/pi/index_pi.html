@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="sdpi.css">
+        <script src="pi.js"></script>
+    </head>
+    <body>
+        <div class="sdpi-wrapper">
+
+            <hr>
+
+            <div class="sdpi-item" id="disable-time">
+                <div class="sdpi-item-label">Time (s)</div>
+                <input type="number" class="sdpi-item-value" id="disable-time-input" value="">
+            </div>
+
+            <div class="sdpi-item">
+                <div class="sdpi-item-label">API Key</div>
+                <input type="text" class="sdpi-item-value" id="ph-key-input" value="" placeholder="Available in Pi-hole admin settings">
+            </div>
+
+            <div class="sdpi-item">
+                <div class="sdpi-item-label">Address</div>
+                <input type="text" class="sdpi-item-value" id="ph-addr-input" value="" placeholder="Leave blank for pi.hole">
+            </div>
+
+            <div class="sdpi-item">
+                <div class="sdpi-item-label">Display Info</div>
+                <select name="stat" id="stat-input" class="sdpi-item-value select">
+                    <option value="none">None</option>
+                    <option value="domains_being_blocked">Domains Being Blocked</option>
+                    <option value="dns_queries_today">DNS Queries Today</option>
+                    <option value="ads_blocked_today">Ads Blocked Today</option>
+                    <option value="ads_percentage_today">% Ads Blocked Today</option>
+                    <option value="unique_domains">Unique Domains</option>
+                    <option value="queries_forwarded">Queries Forwarded</option>
+                    <option value="queries_cached">Queries Cached</option>
+                    <option value="clients_ever_seen">Clients Ever Seen</option>
+                    <option value="unique_clients">Unique Clients</option>
+                </select>
+            </div>
+
+        </div>
+    </body>
+</html>

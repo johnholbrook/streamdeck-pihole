@@ -1,0 +1,54 @@
+{
+    "SDKVersion": 2,
+    "Author": "John Holbrook",
+    "CodePath": "code.html",
+    "PropertyInspectorPath": "pi/index_pi.html",
+    "Description": "Monitor & Control Pi-hole from your Stream Deck",
+    "Name": "Pi-hole",
+    "Category": "Pi-hole",
+    "CategoryIcon": "img/category-icon",
+    "Icon": "img/toggle",
+    "URL": "https://github.com/johnholbrook",
+    "Version": "1.0",
+    "OS": [
+        {
+            "Platform": "mac",
+            "MinimumVersion": "10.11"
+        },
+        {
+            "Platform": "windows",
+            "MinimumVersion": "10"
+        }
+    ],
+    "Software": {
+        "MinimumVersion": "5.0.0"
+    },
+    "Actions":[
+        {
+            "Icon": "img/temp-disable-action-image",
+            "Name": "Temporarily Disable",
+            "States": [
+                {
+                    "Image": "img/temp-disable"
+                },
+                {
+                    "Image": "img/temp-disable-grey"
+                }
+            ],
+            "UUID": "us.johnholbrook.pihole.temporarily-disable"
+        },
+        {
+            "Icon": "img/toggle-action-image",
+            "Name": "Toggle",
+            "States": [
+                {
+                    "Image": "img/toggle"
+                },
+                {
+                    "Image": "img/toggle-grey"
+                }
+            ],
+            "UUID": "us.johnholbrook.pihole.toggle"
+        }
+    ]
+}
