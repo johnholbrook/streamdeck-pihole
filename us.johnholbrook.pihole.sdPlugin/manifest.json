@@ -8,7 +8,7 @@
     "Category": "Pi-hole",
     "CategoryIcon": "img/category-icon",
     "Icon": "img/toggle",
-    "URL": "https://github.com/johnholbrook",
+    "URL": "https://github.com/johnholbrook/streamdeck-pihole",
     "Version": "1.0",
     "OS": [
         {
