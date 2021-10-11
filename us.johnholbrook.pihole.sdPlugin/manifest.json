@@ -21,7 +21,7 @@
         }
     ],
     "Software": {
-        "MinimumVersion": "5.0.0"
+        "MinimumVersion": "5.0"
     },
     "Actions":[
         {
