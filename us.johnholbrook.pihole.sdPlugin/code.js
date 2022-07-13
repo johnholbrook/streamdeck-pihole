@@ -45,20 +45,7 @@ function temporarily_disable(context){
     let settings = instances[context].settings;
     get_ph_status(settings, response => {
         if (response.status == "enabled"){  // it only makes sense to temporarily disable p-h if it's currently enabled
-            // stop the poller from changing the state while p-h is temporarily disabled
-            instances[context].settings.show_status = false;
-            // disable p-h
-            callPiHole(settings, "disable");
-            // set disabled state on button
-            setState(context, 1);
-
-            // after the appropriate amount of time, re-enable p-h
-            let interval = Number(settings.disable_time);
-            setTimeout(() => {
-                callPiHole(settings, "enable");
-                setState(context, 0);
-                instances[context].settings.show_status = true;
-            }, interval * 1000);
+            callPiHole(settings, `disable=${settings.disable_time}`)
         }
     });
 }
