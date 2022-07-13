@@ -9,7 +9,7 @@
     "CategoryIcon": "img/category-icon",
     "Icon": "img/toggle",
     "URL": "https://github.com/johnholbrook/streamdeck-pihole",
-    "Version": "1.0",
+    "Version": "1.1",
     "OS": [
         {
             "Platform": "mac",
