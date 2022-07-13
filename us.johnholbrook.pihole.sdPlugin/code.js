@@ -157,7 +157,7 @@ function writeSettings(context, action, settings){
         clearInterval(instances[context].poller);
     }
     instances[context].settings.show_status = true;
-    instances[context].poller = setInterval(pollPihole, 5000, context);
+    instances[context].poller = setInterval(pollPihole, 1000, context);
     log(JSON.stringify(instances));
 }
 
