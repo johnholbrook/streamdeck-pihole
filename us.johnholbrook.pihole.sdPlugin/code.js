@@ -26,7 +26,7 @@ function callPiHole(settings, cmd){
 
 // get the status of the pi-hole (enabled/disabled, stats, etc.) and pass to a handler function
 function get_ph_status(settings, handler){
-    let req_addr = `http://${settings.ph_addr}/admin/api.php`;
+    let req_addr = `http://${settings.ph_addr}/admin/api.php?summaryRaw&auth=${settings.ph_key}`;
     // log(`request to ${req_addr}`);
     let xhr = new XMLHttpRequest();
     xhr.open("GET", req_addr);
