@@ -37,8 +37,8 @@ function connectElgatoStreamDeckSocket(inPort, inPropertyInspectorUUID, inRegist
     action = actionInfo.action;
     context = inPropertyInspectorUUID;
 
-    // hide the "disable time" input for the toggle action
-    if (action == "us.johnholbrook.pihole.toggle"){
+    // hide the "disable time" input if necessary
+    if (action != "us.johnholbrook.pihole.temporarily-disable"){
         document.querySelector("#disable-time").style.display = "none";
     }
 
@@ -68,21 +68,7 @@ function updateSettings(){
             "message": "Hello World!"
         }
     });
-    if (action == "us.johnholbrook.pihole.toggle"){
-        let key = document.querySelector("#ph-key-input").value;
-        let addr = document.querySelector("#ph-addr-input").value;
-        let stat = document.querySelector("#stat-input").value;
-        send({
-            "event" : "setSettings",
-            "context" : context,
-            "payload": {
-                "ph_addr" : addr,
-                "ph_key" : key,
-                "stat" : stat
-            }
-        });
-    }
-    else if (action == "us.johnholbrook.pihole.temporarily-disable"){
+    if (action == "us.johnholbrook.pihole.temporarily-disable"){
         let disable_time = document.querySelector("#disable-time-input").value;
         let key = document.querySelector("#ph-key-input").value;
         let addr = document.querySelector("#ph-addr-input").value;
@@ -98,6 +84,50 @@ function updateSettings(){
             }
         });
     }
+    else{
+        let key = document.querySelector("#ph-key-input").value;
+        let addr = document.querySelector("#ph-addr-input").value;
+        let stat = document.querySelector("#stat-input").value;
+        send({
+            "event" : "setSettings",
+            "context" : context,
+            "payload": {
+                "ph_addr" : addr,
+                "ph_key" : key,
+                "stat" : stat
+            }
+        });
+    }
+    // if (action == "us.johnholbrook.pihole.toggle"){
+    //     let key = document.querySelector("#ph-key-input").value;
+    //     let addr = document.querySelector("#ph-addr-input").value;
+    //     let stat = document.querySelector("#stat-input").value;
+    //     send({
+    //         "event" : "setSettings",
+    //         "context" : context,
+    //         "payload": {
+    //             "ph_addr" : addr,
+    //             "ph_key" : key,
+    //             "stat" : stat
+    //         }
+    //     });
+    // }
+    // else if (action == "us.johnholbrook.pihole.temporarily-disable"){
+    //     let disable_time = document.querySelector("#disable-time-input").value;
+    //     let key = document.querySelector("#ph-key-input").value;
+    //     let addr = document.querySelector("#ph-addr-input").value;
+    //     let stat = document.querySelector("#stat-input").value;
+    //     send({
+    //         "event" : "setSettings",
+    //         "context" : context,
+    //         "payload": {
+    //             "ph_addr" : addr,
+    //             "ph_key" : key,
+    //             "disable_time" : disable_time,
+    //             "stat" : stat
+    //         }
+    //     });
+    // }
 }
 
 document.addEventListener("DOMContentLoaded", () => {

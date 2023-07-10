@@ -49,6 +49,32 @@
                 }
             ],
             "UUID": "us.johnholbrook.pihole.toggle"
+        },
+        {
+            "Icon": "img/disable-action-image",
+            "Name": "Disable",
+            "States": [
+                {
+                    "Image": "img/disable"
+                },
+                {
+                    "Image": "img/disable-grey"
+                }
+            ],
+            "UUID": "us.johnholbrook.pihole.disable"
+        },
+        {
+            "Icon": "img/enable-action-image",
+            "Name": "Enable",
+            "States": [
+                {
+                    "Image": "img/enable"
+                },
+                {
+                    "Image": "img/enable-grey"
+                }
+            ],
+            "UUID": "us.johnholbrook.pihole.enable"
         }
     ]
 }

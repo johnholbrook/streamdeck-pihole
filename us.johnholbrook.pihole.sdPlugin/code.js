@@ -65,6 +65,18 @@ function toggle(context){
     });
 }
 
+// event handler for us.johnholbrook.pihole.disable
+function disable(context){
+    let settings = instances[context].settings;
+    callPiHole(settings, "disable");
+}
+
+// event handler for us.johnholbrook.pihole.enable
+function enable(context){
+    let settings = instances[context].settings;
+    callPiHole(settings, "enable");
+}
+
 // poll p-h and set the state and button text appropriately
 // (called once per second per instance)
 function pollPihole(context){
@@ -76,6 +88,7 @@ function pollPihole(context){
                 "event": "showAlert",
                 "context": context
             });
+            log(response);
         }
         else{
             // set state according to whether p-h is enabled or disabled
@@ -181,7 +194,8 @@ function connectElgatoStreamDeckSocket(inPort, inPluginUUID, inRegisterEvent, in
         let action = jsonObj.action;
         let context = jsonObj.context;
 
-        log(`${action} ${event}`);
+        // log(`${action} ${event}`);
+        console.log(`${action} ${event}`);
 
         // update settings for this instance
         if (event == "didReceiveSettings"){
@@ -208,6 +222,12 @@ function connectElgatoStreamDeckSocket(inPort, inPluginUUID, inRegisterEvent, in
             }
             else if (action == "us.johnholbrook.pihole.temporarily-disable"){
                 temporarily_disable(context);
+            }
+            else if (action == "us.johnholbrook.pihole.disable"){
+                disable(context);
+            }
+            else if (action == "us.johnholbrook.pihole.enable"){
+                enable(context);
             }
         }
     }
