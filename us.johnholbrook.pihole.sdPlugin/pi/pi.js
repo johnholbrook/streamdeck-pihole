@@ -47,6 +47,7 @@ function connectElgatoStreamDeckSocket(inPort, inPropertyInspectorUUID, inRegist
     document.querySelector("#ph-key-input").value = settings.ph_key ? settings.ph_key : "";
     document.querySelector("#ph-addr-input").value = settings.ph_addr ? settings.ph_addr : "";
     document.querySelector("#stat-input").value = settings.stat ? settings.stat : "none";
+    document.querySelector("#protocol-input").value = settings.protocol ? settings.protocol : "http";
     if (action == "us.johnholbrook.pihole.temporarily-disable"){
         document.querySelector("#disable-time-input").value = settings.disable_time ? settings.disable_time : "";
     }
@@ -73,6 +74,7 @@ function updateSettings(){
         let key = document.querySelector("#ph-key-input").value;
         let addr = document.querySelector("#ph-addr-input").value;
         let stat = document.querySelector("#stat-input").value;
+        let protocol = document.querySelector("#protocol-input").value;
         send({
             "event" : "setSettings",
             "context" : context,
@@ -80,7 +82,8 @@ function updateSettings(){
                 "ph_addr" : addr,
                 "ph_key" : key,
                 "disable_time" : disable_time,
-                "stat" : stat
+                "stat" : stat,
+                "protocol": protocol
             }
         });
     }
@@ -88,46 +91,18 @@ function updateSettings(){
         let key = document.querySelector("#ph-key-input").value;
         let addr = document.querySelector("#ph-addr-input").value;
         let stat = document.querySelector("#stat-input").value;
+        let protocol = document.querySelector("#protocol-input").value;
         send({
             "event" : "setSettings",
             "context" : context,
             "payload": {
                 "ph_addr" : addr,
                 "ph_key" : key,
-                "stat" : stat
+                "stat" : stat,
+                "protocol": protocol
             }
         });
     }
-    // if (action == "us.johnholbrook.pihole.toggle"){
-    //     let key = document.querySelector("#ph-key-input").value;
-    //     let addr = document.querySelector("#ph-addr-input").value;
-    //     let stat = document.querySelector("#stat-input").value;
-    //     send({
-    //         "event" : "setSettings",
-    //         "context" : context,
-    //         "payload": {
-    //             "ph_addr" : addr,
-    //             "ph_key" : key,
-    //             "stat" : stat
-    //         }
-    //     });
-    // }
-    // else if (action == "us.johnholbrook.pihole.temporarily-disable"){
-    //     let disable_time = document.querySelector("#disable-time-input").value;
-    //     let key = document.querySelector("#ph-key-input").value;
-    //     let addr = document.querySelector("#ph-addr-input").value;
-    //     let stat = document.querySelector("#stat-input").value;
-    //     send({
-    //         "event" : "setSettings",
-    //         "context" : context,
-    //         "payload": {
-    //             "ph_addr" : addr,
-    //             "ph_key" : key,
-    //             "disable_time" : disable_time,
-    //             "stat" : stat
-    //         }
-    //     });
-    // }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -136,4 +111,5 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#ph-key-input").onchange = updateSettings;
     document.querySelector("#ph-addr-input").onchange = updateSettings;
     document.querySelector("#stat-input").onchange = updateSettings;
+    document.querySelector("#protocol-input").onchange = updateSettings;
 });

@@ -18,7 +18,8 @@ function log(message){
 
 // make a call to enable or disable pi-hole
 function callPiHole(settings, cmd){
-    let req_addr = `http://${settings.ph_addr}/admin/api.php?${cmd}&auth=${settings.ph_key}`;
+    let req_addr = `${settings.protocol}://${settings.ph_addr}/admin/api.php?${cmd}&auth=${settings.ph_key}`;
+    // log(`call request to ${req_addr}`);
     let xhr = new XMLHttpRequest();
     xhr.open("GET", req_addr);
     xhr.send();
@@ -26,8 +27,8 @@ function callPiHole(settings, cmd){
 
 // get the status of the pi-hole (enabled/disabled, stats, etc.) and pass to a handler function
 function get_ph_status(settings, handler){
-    let req_addr = `http://${settings.ph_addr}/admin/api.php?summaryRaw&auth=${settings.ph_key}`;
-    // log(`request to ${req_addr}`);
+    let req_addr = `${settings.protocol}://${settings.ph_addr}/admin/api.php?summaryRaw&auth=${settings.ph_key}`;
+    // log(`get_status request to ${req_addr}`);
     let xhr = new XMLHttpRequest();
     xhr.open("GET", req_addr);
     xhr.onload = function(){
