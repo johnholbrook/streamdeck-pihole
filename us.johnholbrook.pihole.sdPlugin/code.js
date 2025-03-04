@@ -34,6 +34,16 @@ function pihole_connect(settings, handler){
     xhr.send(JSON.stringify({ password: settings.ph_key }));
 }
 
+// delete pi-hole session since API seats are limited
+function pihole_end({ settings, session }){
+    if (session == null) return;
+    let req_addr = `${settings.protocol}://${settings.ph_addr}/api/auth/session/${session.sid}`;
+    // log(`call request to ${req_addr}`);
+    let xhr = new XMLHttpRequest();
+    xhr.open("DELETE", req_addr);
+    xhr.send();
+}
+
 // make a call to check if pi-hole is enabled
 function getBlockingStatus(settings, session, handler){
     let req_addr = `${settings.protocol}://${settings.ph_addr}/api/dns/blocking`;
@@ -62,12 +72,13 @@ function setBlockingStatus(settings, session, enabled, timer){
     xhr.send(JSON.stringify({ blocking: enabled, timer }));
 }
 
-// get the status of the pi-hole (enabled/disabled, stats, etc.) and pass to a handler function
-function get_ph_status(settings, handler){
-    let req_addr = `${settings.protocol}://${settings.ph_addr}/admin/api.php?summaryRaw&auth=${settings.ph_key}`;
+// get stats for the pi-hole (# queries, # clients, etc.) and pass to a handler function
+function getStatsSummary(settings, session, handler){
+    let req_addr = `${settings.protocol}://${settings.ph_addr}/api/stats/summary`;
     // log(`get_status request to ${req_addr}`);
     let xhr = new XMLHttpRequest();
     xhr.open("GET", req_addr);
+    xhr.setRequestHeader("X-FTL-SID", session.sid);
     xhr.onload = function(){
         data = JSON.parse(xhr.response);
         handler(data);
@@ -142,14 +153,25 @@ function pollPihole(context){
 
             // display stat, if desired
             if (settings.stat != "none"){
-                // let stat = String(response[settings.stat]);
-                let stat = process_stat(response[settings.stat], settings.stat);
-                // log(stat);
-                send({
-                    "event": "setTitle",
-                    "context": context,
-                    "payload": {
-                        "title": stat
+                getStatsSummary(settings, session, response => {
+                    if ("error" in response){
+                        send({
+                            "event": "showAlert",
+                            "context": context
+                        });
+                        log(response);
+                    }
+                    else{
+                        // let stat = String(response[settings.stat]);
+                        let stat = process_stat(response, settings.stat);
+                        // log(stat);
+                        send({
+                            "event": "setTitle",
+                            "context": context,
+                            "payload": {
+                                "title": stat
+                            }
+                        });
                     }
                 });
             }
@@ -159,12 +181,26 @@ function pollPihole(context){
 
 // process the pi-hole stats to make them more human-readable,
 // then cast to string
-function process_stat(value, type){
-    if (type == "ads_percentage_today"){
-        return value.toFixed(2) + "%";
-    }
-    else{
-        return String(value) + ""
+function process_stat(stats, type){
+    switch (type){
+        case "domains_being_blocked":
+            return String(stats.gravity.domains_being_blocked);
+        case "dns_queries_today":
+            return String(stats.queries.total);
+        case "ads_blocked_today":
+            return String(stats.queries.blocked);
+        case "ads_percentage_today":
+            return stats.queries.percent_blocked.toFixed(2) + "%";
+        case "unique_domains":
+            return String(stats.queries.unique_domains);
+        case "queries_forwarded":
+            return String(stats.queries.forwarded);
+        case "queries_cached":
+            return String(stats.queries.cached);
+        case "clients_ever_seen":
+            return String(stats.clients.total);
+        case "unique_clients":
+            return String(stats.clients.active);
     }
 }
 
@@ -203,11 +239,23 @@ function writeSettings(context, action, settings){
     if (instances[context].settings.ph_addr == ""){
         instances[context].settings.ph_addr = "pi.hole";
     }
+    if (instances[context].settings.stat == "none"){
+        send({
+            "event": "setTitle",
+            "context": context,
+            "payload": {
+                "title": ""
+            }
+        });
+    }
 
-    // poll p-h to get status
+    // clean up old p-h instance
     if ("poller" in instances[context]){
         clearInterval(instances[context].poller);
     }
+    pihole_end(instances[context]);
+
+    // poll p-h to get status
     instances[context].settings.show_status = true;
     pihole_connect(instances[context].settings, response => {
         if ("error" in response) {
@@ -218,8 +266,7 @@ function writeSettings(context, action, settings){
             log(response);
         } else {
             instances[context].session = response.session;
-            // instances[context].poller = setInterval(pollPihole, Math.ceil(response.took), context);
-            instances[context].poller = setInterval(pollPihole, 60000, context);
+            instances[context].poller = setInterval(pollPihole, 5000, context);
         }
         // log(JSON.stringify(instances));
     });
@@ -236,6 +283,10 @@ function connectElgatoStreamDeckSocket(inPort, inPluginUUID, inRegisterEvent, in
             "uuid": inPluginUUID
         };
         websocket.send(JSON.stringify(json));
+    };
+    websocket.onclose = function(){
+        // log("exiting now");
+        pihole_end(instances[context]);
     };
 
     // message handler
@@ -263,6 +314,7 @@ function connectElgatoStreamDeckSocket(inPort, inPluginUUID, inRegisterEvent, in
             if ("poller" in instances[context]){
                 clearInterval(instances[context].poller);
             }
+            pihole_end(instances[context]);
             delete instances[context];
         }
 
