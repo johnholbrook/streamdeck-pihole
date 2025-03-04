@@ -120,6 +120,7 @@ function enable(context){
 function pollPihole(context){
     let { settings, session } = instances[context];
     getBlockingStatus(settings, session, response => {
+        // log(`response: ${JSON.stringify(response)}`)
         if ("error" in response){ // couldn't reach p-h, display a warning
             // log(`${instances[context].action} error`)
             send({
@@ -217,9 +218,10 @@ function writeSettings(context, action, settings){
             log(response);
         } else {
             instances[context].session = response.session;
-            instances[context].poller = setInterval(pollPihole, Math.ceil(response.took), context);
+            // instances[context].poller = setInterval(pollPihole, Math.ceil(response.took), context);
+            instances[context].poller = setInterval(pollPihole, 60000, context);
         }
-        log(JSON.stringify(instances));
+        // log(JSON.stringify(instances));
     });
 }
 
@@ -244,7 +246,7 @@ function connectElgatoStreamDeckSocket(inPort, inPluginUUID, inRegisterEvent, in
         let context = jsonObj.context;
 
         // log(`${action} ${event}`);
-        console.log(`${action} ${event}`);
+        // console.log(`${action} ${event}`);
 
         // update settings for this instance
         if (event == "didReceiveSettings"){
