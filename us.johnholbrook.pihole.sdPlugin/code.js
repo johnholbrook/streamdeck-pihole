@@ -37,10 +37,11 @@ function pihole_connect(settings, handler){
 // delete pi-hole session since API seats are limited
 function pihole_end({ settings, session }){
     if (session == null) return;
-    let req_addr = `${settings.protocol}://${settings.ph_addr}/api/auth/session/${session.sid}`;
+    let req_addr = `${settings.protocol}://${settings.ph_addr}/api/auth`;
     // log(`call request to ${req_addr}`);
     let xhr = new XMLHttpRequest();
     xhr.open("DELETE", req_addr);
+    xhr.setRequestHeader("X-FTL-SID", session.sid);
     xhr.send();
 }
 
@@ -154,6 +155,7 @@ function pollPihole(context){
             // display stat, if desired
             if (settings.stat != "none"){
                 getStatsSummary(settings, session, response => {
+                    // log(`response: ${JSON.stringify(response)}`)
                     if ("error" in response){
                         send({
                             "event": "showAlert",
@@ -257,19 +259,32 @@ function writeSettings(context, action, settings){
 
     // poll p-h to get status
     instances[context].settings.show_status = true;
-    pihole_connect(instances[context].settings, response => {
-        if ("error" in response) {
+    const onReady = (response) => {
+        // log(`response: ${JSON.stringify(response)}`)
+        if ("error" in response){
             send({
                 "event": "showAlert",
                 "context": context
             });
             log(response);
-        } else {
+        } else{
             instances[context].session = response.session;
-            instances[context].poller = setInterval(pollPihole, 5000, context);
+            instances[context].poller = setInterval(() => {
+                const timeNow = Math.floor(Date.now() / 1000);
+                const sessionExpired = "lastUpdateTime" in instances[context] &&
+                    (timeNow - instances[context].lastUpdateTime) > instances[context].session.validity;
+                instances[context].lastUpdateTime = timeNow;
+                if (sessionExpired){
+                    clearInterval(instances[context].poller);
+                    pihole_connect(instances[context].settings, onReady);
+                } else{
+                    pollPihole(context);
+                }
+            }, Math.ceil(response.took) * 1000);
         }
         // log(JSON.stringify(instances));
-    });
+    }
+    pihole_connect(instances[context].settings, onReady);
 }
 
 // called by the stream deck software when the plugin is initialized
