@@ -63,12 +63,12 @@ function sendToPlugin(payload){
 }
 
 function updateSettings(){
-    send({
-        "event": "logMessage",
-        "payload": {
-            "message": "Hello World!"
-        }
-    });
+    // send({
+    //     "event": "logMessage",
+    //     "payload": {
+    //         "message": "Hello World!"
+    //     }
+    // });
     if (action == "us.johnholbrook.pihole.temporarily-disable"){
         let disable_time = document.querySelector("#disable-time-input").value;
         let key = document.querySelector("#ph-key-input").value;
