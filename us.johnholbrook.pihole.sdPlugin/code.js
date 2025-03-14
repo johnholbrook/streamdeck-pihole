@@ -186,23 +186,23 @@ function pollPihole(context){
 function process_stat(stats, type){
     switch (type){
         case "domains_being_blocked":
-            return String(stats.gravity.domains_being_blocked);
+            return stats.gravity.domains_being_blocked.toLocaleString();
         case "dns_queries_today":
-            return String(stats.queries.total);
+            return stats.queries.total.toLocaleString();
         case "ads_blocked_today":
-            return String(stats.queries.blocked);
+            return stats.queries.blocked.toLocaleString();
         case "ads_percentage_today":
             return stats.queries.percent_blocked.toFixed(2) + "%";
         case "unique_domains":
-            return String(stats.queries.unique_domains);
+            return stats.queries.unique_domains.toLocaleString();
         case "queries_forwarded":
-            return String(stats.queries.forwarded);
+            return stats.queries.forwarded.toLocaleString();
         case "queries_cached":
-            return String(stats.queries.cached);
+            return stats.queries.cached.toLocaleString();
         case "clients_ever_seen":
-            return String(stats.clients.total);
+            return stats.clients.total.toLocaleString();
         case "unique_clients":
-            return String(stats.clients.active);
+            return stats.clients.active.toLocaleString();
     }
 }
 
